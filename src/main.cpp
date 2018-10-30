@@ -49,7 +49,7 @@ void getConfig(){
 	lua_getglobal(L, "db_conf");
 	
 	//ip
-    lua_getfiled(L, -1, "ip");
+    lua_getfield(L, -1, "ip");
     if(!lua_isstring(L, -1)){
             cout << "ip is not string" << endl;
     }
@@ -57,7 +57,7 @@ void getConfig(){
 	lua_pop(L, 1);
 	
 	//port
-    lua_getfiled(L, -1, "port");
+    lua_getfield(L, -1, "port");
     if(!lua_isnumber(L, -1)){
             cout << "port is not number" << endl;
     }
@@ -65,7 +65,7 @@ void getConfig(){
 	lua_pop(L, 1);
 	
 	//userName
-    lua_getfiled(L, -1, "userName");
+    lua_getfield(L, -1, "userName");
     if(!lua_isstring(L, -1)){
             cout << "userName is not string" << endl;
     }
@@ -73,7 +73,7 @@ void getConfig(){
 	lua_pop(L, 1);
     
 	//password
-	lua_getfiled(L, -1, "password");
+	lua_getfield(L, -1, "password");
     if(!lua_isstring(L, -1)){
             cout << "password is not string" << endl;
     }
@@ -81,7 +81,7 @@ void getConfig(){
 	lua_pop(L, 1);
     
 	//sid
-	lua_getfiled(L, -1, "sid");
+	lua_getfield(L, -1, "sid");
     if(!lua_isstring(L, -1)){
             cout << "sid is not string" << endl;
     }
