@@ -1,5 +1,7 @@
 #!/bin/bash
 App="/home/wumh/myProject/brks/src/brks"
+config="/home/wumh/myProject/brks/conf/log.conf"
+pidFile="/home/wumh/myProject/brks/pidFile"
  
 echo $1
 echo $App
@@ -9,7 +11,8 @@ function killProsess() {
 	echo $NAME
         
         // 获取进程 PID
-	PID=$(ps -e | grep $NAME | awk '{print $1}') 
+	#PID=$(ps -e | grep $NAME | awk '{print $1}')
+	PID=$(cat $pidFile)
 	
 	echo "PID: $PID"
         // 杀死进程
@@ -19,7 +22,8 @@ function killProsess() {
 function start() {
 	echo "start"
 	echo "----------------"
-	$App
+	$App $config &
+	echo $! > $pidFile
 }
  
 function stop() {

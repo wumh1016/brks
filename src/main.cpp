@@ -23,6 +23,7 @@ typedef struct conf{
 }Conf;
 
 Conf config;
+int brksPort;
 
 void getConfig(){
 	
@@ -32,39 +33,62 @@ void getConfig(){
     //load Lua base libraries
     luaL_openlibs(L);
     //load the script
-    if(luaL_loadfile(L, "fun.lua") || lua_pcall(L, 0 , 0, 0)){
+    if(luaL_dofile(L, "../conf/brks_conf.lua") || lua_pcall(L, 0 , 0, 0)){
         cout << "dofile error " << lua_tostring(L, -1);
         exit;
     }
+	
+	//get server port
+	lua_getglobal(L, "brks_port");
+	brksPort = lua_tonumber(L, -1);
+	lua_pop(L, 1);
+	
+	//get database info
     memset(&config, 0, sizeof(Conf));
 	//get configure information
-    lua_getglobal(L, "ip");
+	lua_getglobal(L, "db_conf");
+	
+	//ip
+    lua_getfiled(L, -1, "ip");
     if(!lua_isstring(L, -1)){
             cout << "ip is not string" << endl;
     }
-    lua_getglobal(L, "port");
+	strcpy(config.ip, lua_tostring(L, -1));
+	lua_pop(L, 1);
+	
+	//port
+    lua_getfiled(L, -1, "port");
     if(!lua_isnumber(L, -1)){
             cout << "port is not number" << endl;
     }
-    lua_getglobal(L, "userName");
+	config.port = lua_tonumber(L, -1);
+	lua_pop(L, 1);
+	
+	//userName
+    lua_getfiled(L, -1, "userName");
     if(!lua_isstring(L, -1)){
             cout << "userName is not string" << endl;
     }
-    lua_getglobal(L, "password");
+	strcpy(config.userName, lua_tostring(L, -1));
+	lua_pop(L, 1);
+    
+	//password
+	lua_getfiled(L, -1, "password");
     if(!lua_isstring(L, -1)){
             cout << "password is not string" << endl;
     }
-    lua_getglobal(L, "sid");
+	strcpy(config.password, lua_tostring(L, -1));
+	lua_pop(L, 1);
+    
+	//sid
+	lua_getfiled(L, -1, "sid");
     if(!lua_isstring(L, -1)){
             cout << "sid is not string" << endl;
     }
+	strcpy(config.sid, lua_tostring(L, -1));
+	lua_pop(L, 1);
 
-    strcpy(config.sid, lua_tostring(L, -1));
-    strcpy(config.password, lua_tostring(L, -2));
-    strcpy(config.userName, lua_tostring(L, -3));
-    config.port = lua_tonumber(L, -4);
-    strcpy(config.ip, lua_tostring(L, -5));
-	
+	lua_pop(L, 1);
 	lua_close(L);
 }
 
@@ -101,7 +125,8 @@ int main(int argc, char** argv)
     std::function< iEvent* (const iEvent*)> fun = std::bind(&DispatchMsgService::process, dms.get(), std::placeholders::_1);
     
     Interface intf(fun);
-    intf.start(9090);
+    //intf.start(9090);
+	intf.start(brksPort);
 
     LOG_INFO("brks start successful!");
 
